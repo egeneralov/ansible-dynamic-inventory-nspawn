@@ -21,10 +21,10 @@ jobs:
         uses: actions/checkout@master
       
       - name: build linux
-        run: GOOS=linux go build -a -v -installsuffix cgo -ldflags="-w -s" -o ansible-dynamic-inventory-nspawn-linux .
+        run: GOOS=linux go build -a -v -installsuffix cgo -ldflags="-w -s" -o ansible-dynamic-inventory-nspawn-linux cmd/ansible-dynamic-inventory-nspawn/*.go
       
       - name: build darwin
-        run: GOOS=darwin go build -a -v -installsuffix cgo -ldflags="-w -s" -o ansible-dynamic-inventory-nspawn-darwin .
+        run: GOOS=darwin go build -a -v -installsuffix cgo -ldflags="-w -s" -o ansible-dynamic-inventory-nspawn-darwin cmd/ansible-dynamic-inventory-nspawn/*.go
       
       - name: Create Release
         id: create_release
