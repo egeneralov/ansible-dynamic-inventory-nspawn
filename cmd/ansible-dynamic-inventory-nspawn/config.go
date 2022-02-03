@@ -13,6 +13,7 @@ type Config struct {
 	CommandList string `json:"command_list" yaml:"command_list" flag:"command_list" default:"machinectl list -o json"`
 	List        bool   `json:"list" yaml:"list" flag:"list" default:"true"`
 	Host        string `json:"host" yaml:"host" flag:"host" default:""`
+	Bastion     string `json:"bastion" yaml:"bastion" flag:"bastion" default:""`
 }
 
 func (c Config) execTask() (task *execute.ExecTask, _ error) {

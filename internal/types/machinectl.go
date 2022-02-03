@@ -14,7 +14,7 @@ type (
 	List []MachineInfo
 )
 
-func(l List) ToGroups() Answer {
+func (l List) ToGroups(bastion string) Answer {
 	if len(l) < 1 {
 		return nil
 	}
@@ -25,6 +25,14 @@ func(l List) ToGroups() Answer {
 			},
 		}
 	)
+	if bastion != "" {
+		r["bastion"] = Group{
+			Hosts: []string{"bastion"},
+		}
+		r["_meta"].HostVariables["bastion"] = StringList{
+			"ansible_host": bastion,
+		}
+	}
 	for _, el := range l {
 		local := strings.Split(el.Machine, "-")
 		if len(local) == 1 {
@@ -41,10 +49,17 @@ func(l List) ToGroups() Answer {
 			group.Hosts = append(group.Hosts, el.Machine)
 			r[groupName] = group
 		}
-		// append to meta
-		r["_meta"].HostVariables[el.Machine] = StringList{
-			"ansible_host": el.Addresses,
+		// generate metadata
+		var machineMetadata = StringList{}
+		if s := strings.Split(el.Addresses, "\n"); len(s) > 1 {
+			machineMetadata["ansible_host"] = s[0]
+		} else {
+			machineMetadata["ansible_host"] = el.Addresses
 		}
+		if bastion != "" {
+			machineMetadata["ansible_ssh_common_args"] = "-o ProxyCommand=\"ssh -W %h:%p -q " + bastion + "\""
+		}
+		r["_meta"].HostVariables[el.Machine] = machineMetadata
 	}
 	return r
 }
