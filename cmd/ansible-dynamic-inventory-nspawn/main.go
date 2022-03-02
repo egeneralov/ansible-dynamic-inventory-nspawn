@@ -30,7 +30,11 @@ func main() {
 	}
 
 	if cfg.List {
-		jr, je := json.Marshal(machinesList.ToGroups(cfg.Bastion))
+		groups := machinesList.ToGroups(cfg.Bastion)
+		if len(groups) == 0 {
+			os.Exit(0)
+		}
+		jr, je := json.Marshal(groups)
 		if je != nil {
 			logger.Fatal("failed to marshal", zap.Error(je))
 		}

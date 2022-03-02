@@ -36,8 +36,7 @@ func (l List) ToGroups(bastion string) Answer {
 	for _, el := range l {
 		local := strings.Split(el.Machine, "-")
 		if len(local) == 1 {
-			// skip host for now
-			continue
+			local = strings.Split(el.Machine, ".")
 		}
 		// append to group
 		groupName := local[0]
